@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAK-Hack 🔓 - Buchhaltung verstehen!</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .fredoka {
+            font-family: 'Fredoka', sans-serif;
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn {
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .wobble {
+            animation: wobble 2s ease-in-out infinite;
+        }
+        
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .explanation-box {
+            background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .example-box {
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+        
+        .rule-box {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+        
+        .emoji-big {
+            font-size: 3rem;
+            display: inline-block;
+        }
+        
+        .divider {
+            border-top: 2px dashed #ddd;
+            margin: 20px 0;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
+            transform: scale(1.02);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* T-Konto Tabelle Styling */
+        .t-konto {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .t-konto-titel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .t-konto table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        .t-konto th {
+            background: #f0f0f0;
+            padding: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid #667eea;
+            text-align: center;
+        }
+        
+        .t-konto td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        
+        .t-konto tr:last-child td {
+            border-bottom: none;
+            font-weight: bold;
+            background: #f9f9f9;
+        }
+        
+        .soll-seite {
+            border-right: 2px solid #667eea;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .upload-area {
+                padding: 20px 15px;
+            }
+            
+            .emoji-big {
+                font-size: 2rem;
+            }
+            
+            h1 {
+                font-size: 2rem !important;
+            }
+            
+            .t-konto {
+                font-size: 0.9rem;
+            }
+            
+            .glass {
+                padding: 20px !important;
+            }
+            
+            .btn {
+                padding: 12px 20px !important;
+                font-size: 0.9rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .t-konto {
+                font-size: 0.85rem;
+            }
+            
+            .t-konto td, .t-konto th {
+                padding: 8px 10px;
+            }
+            
+            .fredoka h1 {
+                font-size: 1.75rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" src="hak-hack.js"></script>
+</body>
+</html>
